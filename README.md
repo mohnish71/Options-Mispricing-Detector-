@@ -1,69 +1,40 @@
-# Options-Mispricing-Detector
+# Options misprice detection and delta neutral strategy simulator
 
-This project analyse U.S. stocks and detects underpriced and overpriced options using the Black-Scholes pricing model along with Implied Volatility (IV) and Historical Volatility (HV) spread analysis. 
+Overview
 
-Project Description
+This project builds a system to detect underpriced call options based on the Black-Scholes model and historical volatility spreads.
+Upon finding mispriced options, it simulates buying the call option and delta-hedging by shorting the underlying stock to maintain market neutrality.
 
-The Options Mispricing Detector is a Python-based system that:
-	•	Calculates the theoretical fair value of stock options using the Black-Scholes pricing model.
-	•	Computes and compares Implied Volatility (IV) and Historical Volatility (HV).
-	•	Flags options as potentially undervalued or overvalued based on:
-	•	Black-Scholes mispricing
-	•	IV-HV spread analysis
-	•	Incorporates position sizing logic based on the strength of mispricing, helping in creating a portfolio with better risk management.
+The strategy was simulated using a $1,000,000 portfolio, generating an estimated return of 8.25% as of April 18, 2025.
 
-Parameters 
+Highlights :
 
--Stocks : The strategy currently focuses on TSLA, NVDA, AAPL, and MSFT. These are highly liquid stocks with active options markets.
--Risk-Free Rate : Set at 5% (0.05) to match US Treasury rates.
--IV-HV Spread Threshold : A minimum difference of 50% (0.5) between implied volatility (IV) and historical volatility (HV). 
--Mispricing Margin : Only options where the theoretical price exceeds the market price by at least $4.00 are considered. 
--Minimum Option Price: Options priced below $1.00 are excluded to avoid illiquid, low-quality contracts.
--Maximum Expiry: Options expiring within 180 days are considered.
+1. Collects options data using yfinance.
+2. Calculate theoretical call option prices using the Black-Scholes model.
+3. Compare theoretical prices with market prices from Yahoo Finance API.
+4. Select options where market price < theoretical price with defined parameters.
+5. Volatility Spread Condition 
+6. Validate trades only when Implied Volatility (IV) is less than Historical Volatility (HV) over the last 30 trading days, supporting the mispricing hypothesis.
+7. Active Risk Management - Compute delta of the bought call option using Black-Scholes Greeks.
+8. Automatic risk managed position sizing usimg 1 Million Dollars of assumed capital. 
 
-Key Concepts and Methodology
- • Black-Scholes Model: A mathematical model used to calculate the theoretical value of European-style options based on inputs like underlying price, strike price, time to expiry, risk-free interest rate, and volatility.
-	•	Implied Volatility (IV): The market’s forecast of a likely movement in an asset’s price. Higher IV generally increases an option’s premium.
-	•	Historical Volatility (HV): A measure of how much the stock price fluctuated in the past (e.g., 30-day rolling standard deviation of returns).
-	•	IV-HV Spread Logic:
-	•	If Implied Volatility (IV) is significantly higher than Historical Volatility (HV), the market is overpricing risk.
-	•	If IV is much lower than HV, the market is underpricing risk.
-	•	Our system identifies options where the spread between IV and HV supports the mispricing detected via Black-Scholes.
-	•	Position Sizing:
-	•	Based on the magnitude of underpricing detected, a basic sizing formula was used to allocate higher portfolio weight to options with stronger signals.
-	•	This ensures that more conviction is placed on trades that show deeper mispricings.
+For full explnation of trading strategy please refer to Technical_strategy.md file in this repository. 
 
-Technologies Used 
-	•	Python
-	•	Jupyter Notebook
-	•	yfinance (for historical options and stock data)
-	•	scipy (for Black-Scholes functions)
-	•	numpy
-	•	pandas
-	•	matplotlib (for visualization)
+Tech Stack : 
 
+Python 
+Numpy
+Pandas
+Matplotlib
+yfinance (market data)
+SciPy (for Black-Scholes model)
 
-How It Works (High-Level Steps)
-	1.	Fetch data:
-	•	Pull underlying stock price, historical volatility, and options chain data using yfinance.
-	2.	Calculate Black-Scholes Theoretical Price:
-	•	Using inputs from the market and assumed risk-free rate.
-	3.	Compare Theoretical vs Market Price:
-	•	Identify if the option is underpriced or overpriced.
-	4.	Calculate IV-HV Spread:
-	•	Check if IV-HV spread confirms the Black-Scholes signal.
-	5.	Signal Generation:
-	•	Only trigger a buy/sell signal if both Black-Scholes mispricing and IV-HV spread confirm the same direction.
-	6.	Portfolio Sizing:
-	•	Allocate portfolio weights based on the strength of underpricing detected.
-	7.	Visualization:
-	•	Plot mispricing signals over time to visually assess model behavior.
+Work in Progress
 
-Upon detecting a mispricing, the system applies a position sizing strategy using delta hedging and calculates estimated returns on a $1 million portfolio.
-
-This project was built as part of a personal initiative to better understand options valuation, volatility arbitrage, and quantitative trading systems.
-
-Currently working on integrating a live backtesting engine to simulate real-market execution, making the detector suitable for practical, real-time trading strategies.
+1. Automating live options data collection using Polygon.io API to backtest this strategy.
+2. Enhancing backtesting with transaction costs, and margin requirements.
+3. Expanding to put options.
+4. Building a live trading simulator for paper trading and further validation.
 
 Author : Mohnish Gautam
 
